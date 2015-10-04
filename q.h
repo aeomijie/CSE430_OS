@@ -25,8 +25,16 @@ typedef struct queue{
    int maxSize; //max size of the queue
 }queue;
 
+
 /*Constructor: creates an empty array queue pointed to variable head*/
-//InitQueue(&head);
+void InitQueue(queue *q){
+   if(q != NULL){
+      q->head = NULL;
+      q->tail = NULL;
+      q->currSize = 0;
+      q->maxSize = 10;
+   }
+}
 
 /*returns a pointer to a new q-element*/
 //NewItem();
