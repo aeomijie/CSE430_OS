@@ -4,11 +4,13 @@
                                 Project #1
 
                 Abigael Omijie | abigael.omijie@asu.edu
-                Katie Gosse    |
+                Katie Gosse    | kgosse@asu.edu
 **************************************************************************/
 
 #ifndef Q_H
 #define Q_H
+
+#include "TCB.h"
 #include <stdlib.h>
 #include <stdio.h>
 
