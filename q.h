@@ -95,7 +95,18 @@ DelQueue(queue *q){
 }
 
 /*moves the header pointer to the next element in the queue*/
-//RotateQ(&head);
-
+RotateQ(&head) {
+   /*if the queue has 2 items*/
+   if(queue.currSize == 2){
+      node *temp;
+      temp = queue->head;
+      queue->head = queue->tail;
+   }
+   /*if the queue has 3 or more items*/
+   else if(queue.currSize >= 3){
+      queue->head = queue->tail;
+      queue->tail = queue->tail->prev;
+   }
+}
 
 #endif
