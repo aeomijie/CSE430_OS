@@ -16,98 +16,94 @@
 
 typedef enum { false, true } bool ;
 
-typedef struct node{
-   int payload; //data 
-   struct node *prev;
-   struct node *next;
-}node;
+typedef struct queueEle{
+   int payload; //element data
+   struct queueEle *prev, *next; //ptrs for each element
+}queueEle_t;
 
 typedef struct queue{
-   node *head; //oldest element in the queue
-   node *tail; //newest element in the queue
-   int currSize; //current size of the queue
-   int maxSize; //max size of the queue
-}queue;
+   queueEle_t* head; //head of the queue
+   int currSize; //current number of items in queue
+   int maxSize; //max number of items in queue
+}queue_t;
 
 /*Constructor: creates an empty array queue pointed to variable head*/
-void InitQueue(queue *q){
+void InitQueue(queue_t *q){
+   /*If a queue doesn't exist, then make one*/
    if(q != NULL){
       q->head = NULL;
-      q->tail = NULL;
       q->currSize = 0;
       q->maxSize = 10;
    }
 }
 
-/*returns a pointer to a new q-element*/
-node* NewItem(){
-   node* item = (node*) malloc(sizeof(node)); //allocate memory for a node 
-   item->payload = 0;
+/*Returns a pointer to a new q-element*/
+queueEle_t* NewItem(){
+   static int i = 0;
+   queueEle_t* item = (queueEle_t*)malloc(sizeof(queueEle_t)); //allocate memory for a an element 
+   item->payload = i;
    item->next = NULL;
    item->prev = NULL;
+   ++i;
 
-   return item;    
+   return item;
 }
 
-//checks to see if the queue is empty
-bool isEmpty(queue *q){
-   if(q != NULL && q->head != NULL)
-      return false;
-   else
-      return true;
+/*Adds a queue item pointed to by item, to queue pointed to by head*/
+bool AddQueue(queue_t *q, queueEle_t* item){
+   /*Both q and the item exist and the queue isn't full*/
+   if(q != NULL && item != NULL && q->currSize != q->maxSize){
+      if(q->head == NULL){
+         q->head = item;
+         q->head->next = q->head;
+         q->head->prev = q->head;
+         ++q->currSize;
+         return true;
+      }
+      else{
+         q->head->prev->next = item;
+         item->next = q->head;
+         item->prev = q->head->prev;
+         q->head->prev = item;
+         ++q->currSize;
+         return true;
+      }
+   }
+   return false;
+}
+ 
+void FreeItem(queueEle_t* item){
+   free(item);
 }
 
-/*adds a queue item pointed to by item, to queue pointed to by head*/
-void AddQueue(queue *q, node* item){
-   if(q != NULL && item != NULL){
-      if(!isEmpty(q)){
-        if(q->currSize == q->maxSize){ //when the q is full
-  	   q->head->payload = item->payload;
-	   q->head = q->head->next;
-	}
-	else{ //non-empty queue with room available
-	   item->prev = q->tail;
-           item->next = q->head;
-           q->tail->next = item;
-           q->head->prev = item;
-           q->tail = item;
-	} 
+/*Deletes an item from head and returns a pointer to the deleted item*/
+queueEle_t* DelQueue(queue_t *q){
+   /*A queue with elements must exist to delete from*/
+   if(q->head != NULL){
+      queueEle_t* item;
+      /*If head is the only element in queue*/
+      if(q->head->next == q->head && q->head->prev == q->head){
+         item = q->head;
+         FreeItem(q->head);
+         q->head = NULL;
       }
-      else{ //if the queue is empty
-	   item->prev = NULL;
-	   item->next = NULL;
-	   q->head = item;
-	   q->tail = item;
-      }
+      else{
+         item = q->head;
+         q->head = q->head->next;
+         q->head->prev = q->head->prev->prev;
+         FreeItem(q->head->prev->next);
+         q->head->prev->next = q->head;
+      } 
+      return item;
    }
-} 
-
-/*deletes an item from head and returns a pointer to the deleted item*/
-DelQueue(queue *q){
-   if(!isEmpty(q)){
-      if(currSize == 1){ //if queue has only one item
-         free (item);
-	 q->head = NULL;
-	 q->tail = NULL;
-      }
-      else{ //if queue has more than one item
-         
-       }
-   }
+   return NULL;
 }
 
 /*moves the header pointer to the next element in the queue*/
-RotateQ(&head) {
-   /*if the queue has 2 items*/
-   if(queue.currSize == 2){
-      node *temp;
-      temp = queue->head;
-      queue->head = queue->tail;
-   }
-   /*if the queue has 3 or more items*/
-   else if(queue.currSize >= 3){
-      queue->head = queue->tail;
-      queue->tail = queue->tail->prev;
+void RotateQ(queue_t *q) {
+   /*If a queue exists and more than one element exists*/
+   if(q->head != NULL && q->head->next != q->head && q->head->prev != q->head){
+      q->head = q->head->next;
    }
 }
 
