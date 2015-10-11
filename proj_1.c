@@ -19,7 +19,7 @@ int main(int argc, char** argv){
    //Repeat the above test again.
 
    queue_t q1, q2;
-   queueEle_t* item;
+   node_t* item;
    int i = 0;
 
    InitQueue(&q1);
@@ -73,7 +73,7 @@ int main(int argc, char** argv){
 
 void printQ(queue_t* q){
    if(q->head != NULL){
-      queueEle_t* traverse = q->head;
+      node_t* traverse = q->head;
       printf("Payload: %d\n", traverse->payload);
       traverse = traverse->next;
       while(traverse != q->head){

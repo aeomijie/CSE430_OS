@@ -16,13 +16,13 @@
 
 typedef enum { false, true } bool ;
 
-typedef struct queueEle{
+typedef struct node{
    int payload; //element data
-   struct queueEle *prev, *next; //ptrs for each element
-}queueEle_t;
+   struct node *prev, *next; //ptrs for each element
+}node_t;
 
 typedef struct queue{
-   queueEle_t* head; //head of the queue
+   node_t* head; //head of the queue
    int currSize; //current number of items in queue
    int maxSize; //max number of items in queue
 }queue_t;
@@ -38,9 +38,9 @@ void InitQueue(queue_t *q){
 }
 
 /*Returns a pointer to a new q-element*/
-queueEle_t* NewItem(){
+node_t* NewItem(){
    static int i = 0;
-   queueEle_t* item = (queueEle_t*)malloc(sizeof(queueEle_t)); //allocate memory for a an element 
+   node_t* item = (node_t*)malloc(sizeof(node_t)); //allocate memory for a an element 
    item->payload = i;
    item->next = NULL;
    item->prev = NULL;
@@ -50,7 +50,7 @@ queueEle_t* NewItem(){
 }
 
 /*Adds a queue item pointed to by item, to queue pointed to by head*/
-bool AddQueue(queue_t *q, queueEle_t* item){
+bool AddQueue(queue_t *q, node_t* item){
    /*Both q and the item exist and the queue isn't full*/
    if(q != NULL && item != NULL && q->currSize != q->maxSize){
       if(q->head == NULL){
@@ -72,15 +72,15 @@ bool AddQueue(queue_t *q, queueEle_t* item){
    return false;
 }
  
-void FreeItem(queueEle_t* item){
+void FreeItem(node_t* item){
    free(item);
 }
 
 /*Deletes an item from head and returns a pointer to the deleted item*/
-queueEle_t* DelQueue(queue_t *q){
+node_t* DelQueue(queue_t *q){
    /*A queue with elements must exist to delete from*/
    if(q->head != NULL){
-      queueEle_t* item;
+      node_t* item;
       /*If head is the only element in queue*/
       if(q->head->next == q->head && q->head->prev == q->head){
          item = q->head;
