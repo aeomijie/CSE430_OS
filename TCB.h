@@ -11,6 +11,7 @@
 #define TCB_H
 
 #include <ucontext.h>
+#include <string.h> //for memset
 
 typedef struct TCB_t {
    struct TCB_t     *next;
