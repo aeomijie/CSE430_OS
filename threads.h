@@ -12,27 +12,29 @@
 
 #include "q.h"
 
-//global queue *RunQ;
+//global header pointer for queue
+queue_t *RunQ;
 
 void start_thread(void (*function) (void)){
-   //stack *s = malloc(sizeof()); //allocate a stack
-   //TCB_t *t = malloc(sizeof(8192)); //allocate a TCB
-   //init_TCB(t, f, s);
-   //addQueue(RunQ,t);
+   void *stack = malloc(sizeof(8192)); //allocate a stack
+   TCB_t *t = malloc(sizeof(TCB_t)); //allocate a TCB
+   init_TCB(t, function, stack, 8192);
+   AddQueue(RunQ, t);
 }
 
 void run(){
    ucontext_t parent; //get a place to store the main context, for faking
-   getcontext(&parent); //magic queue
-   swapcontext(&parent, &(RunQ->context)); //start the first thread
+   getcontext(&parent); //magic queue 
+   swapcontext(&parent, &(RunQ->head->context)); //start the first thread
 }
 
 void yield(){
    //initialize curr, next;
-   curr = RunQ;
-   rotateQ(RunQ);
+   queue_t *curr, *next;
+   curr  = RunQ;
+   RotateQ(RunQ);
    next = RunQ;
-   swapcontext(curr->context, next->context); 
+   swapcontext(&(curr->head->context), &(next->head->context)); 
 }
 
 #endif /*THREADS_H*/
