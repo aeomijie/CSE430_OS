@@ -16,7 +16,7 @@ In main, initialize RunQ, start threads using the functions you defined using st
 Call run() and watch.
 Call friends and family*/
 
-queue_t *RunQ;
+TCB_t *RunQ;
 static int global = 0;
 
 void *func1();
@@ -25,7 +25,7 @@ void *func2();
 int main(int argc, char argv[]){
    //initialize RunQ
    InitQueue(RunQ);
-   
+
    //Start threads
    start_thread(func1());
    start_thread(func2());
@@ -38,9 +38,16 @@ int main(int argc, char argv[]){
 
 void *func1(){
    static int local = 0;
+   printf("func1\tstatic int local = 0;\n");
    printf("Function one - local: %d, global: %d\n", local, global);
    ++local;
+   printf("func1\t++local;\n");
    ++global;
+   printf("func1\t++global;\n");
+   sleep(1);
+   printf("func1\tsleep(1);\n");
+   yield();
+   printf("func1\tyield()\n");
 }
 
 void *func2(){
@@ -48,4 +55,6 @@ void *func2(){
    printf("Function two - local: %d, global: %d\n", local, global);
    ++local;
    ++global;
+   sleep(1);
+   yield();
 }
