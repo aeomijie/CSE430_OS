@@ -29,44 +29,37 @@ typedef enum { false, true } bool ;
 }queue_t;*/
 
 /*Constructor: creates an empty array queue pointed to variable head*/
-void InitQueue(TCB_t *q){
-   //If a queue doesn't exist, then make one
-   if(q != NULL){
-      q->next = NULL;
-      q->prev = NULL;
-   }
+void InitQueue(TCB_t **q){
+   //Create a queue
+   *q = NULL;
 }
 
-//Is this function needed now???
 /*Returns a pointer to a new q-element*/
-/*TCB_t* NewItem(){
-   static int i = 0;
-   TCB_t* item = (queue_t*)malloc(sizeof(queue_t)); //allocate memory for a an element 
-   item->payload = i;
+TCB_t* NewItem(){
+   //static int i = 0;
+   TCB_t* item = (TCB_t*)malloc(sizeof(TCB_t)); //allocate memory for a an element 
+   //item->payload = i;
    item->next = NULL;
    item->prev = NULL;
-   ++i;
+   //++i;
 
    return item;
-}*/
+}
 
 /*Adds a queue item pointed to by item, to queue pointed to by head*/
-bool AddQueue(TCB_t *q, TCB_t* item){
-   /*Both q and the item exist and the queue isn't full*/
-   if(q != NULL && item != NULL){ //&& q->currSize != q->maxSize){
-      if(q->next == NULL && q->prev == NULL){
-         q = item;
-         q->next = item;
-         q->prev = item;
-         //++q->currSize;
+bool AddQueue(TCB_t **q, TCB_t* item){
+  if(item != NULL){
+      if(*q == NULL){
+         *q = item;
+         (*q)->next = *q;
+         (*q)->prev = *q;
          return true;
       }
       else{
-         q->prev->next = item;
-         item->next = q;
-         item->prev = q->prev;
-         q->prev = item;
-         //++q->currSize;
+         (*q)->prev->next = item;
+         item->next = *q;
+         item->prev = (*q)->prev;
+         (*q)->prev = item;
          return true;
       }
    }
@@ -78,22 +71,22 @@ void FreeItem(TCB_t* item){
 }
 
 /*Deletes an item from head and returns a pointer to the deleted item*/
-TCB_t* DelQueue(TCB_t *q){
+TCB_t* DelQueue(TCB_t **q){
    /*A queue with elements must exist to delete from*/
-   if(q != NULL){
+   if(*q != NULL){
       TCB_t* item;
       /*If head is the only element in queue*/
-      if(q->next == q && q->prev == q){
-         item = q;
-         FreeItem(q);
-         q = NULL;
+      if((*q)->next == *q && (*q)->prev == *q){
+         item = *q;
+         FreeItem(*q);
+         *q = NULL;
       }
       else{
-         item = q;
-         q = q->next;
-         q->prev = q->prev->prev;
-         FreeItem(q->prev->next);
-         q->prev->next = q;
+         item = *q;
+         *q = (*q)->next;
+         (*q)->prev = (*q)->prev->prev;
+         FreeItem((*q)->prev->next);
+         (*q)->prev->next = *q;
       } 
       return item;
    }
@@ -101,11 +94,10 @@ TCB_t* DelQueue(TCB_t *q){
 }
 
 /*moves the header pointer to the next element in the queue*/
-void RotateQ(TCB_t *q) {
+void RotateQ(TCB_t **q) {
    /*If a queue exists and more than one element exists*/
-   if(q != NULL && q->next != q && q->prev != q){
-      q = q->next;
-   }
+   if(*q != NULL)
+      *q = (*q)->next;
 }
 
 #endif
