@@ -24,9 +24,6 @@ void start_thread(void (*function) (void)){
 void run(){
    ucontext_t parent; //get a place to store the main context, for faking
    getcontext(&parent); //magic queue
-
-   /* Segmentation fault somewhere here */
-
    swapcontext(&parent, &(RunQ->context)); //start the first thread
 }
 
@@ -36,9 +33,6 @@ void yield(){
    curr  = RunQ;
    RotateQ(&RunQ);
    next = RunQ;
-
-   /*Segmentation fault somewhere here*/
-
    swapcontext(&(curr->context), &(next->context));
 }
 

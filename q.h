@@ -14,8 +14,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef enum { false, true } bool ;
-
 // Need to use TCB_t, instead of node
 /*typedef struct node{
    int payload; //element data
@@ -47,23 +45,20 @@ TCB_t* NewItem(){
 }
 
 /*Adds a queue item pointed to by item, to queue pointed to by head*/
-bool AddQueue(TCB_t **q, TCB_t* item){
+void AddQueue(TCB_t **q, TCB_t* item){
   if(item != NULL){
       if(*q == NULL){
          *q = item;
          (*q)->next = *q;
          (*q)->prev = *q;
-         return true;
       }
       else{
          (*q)->prev->next = item;
          item->next = *q;
          item->prev = (*q)->prev;
          (*q)->prev = item;
-         return true;
       }
    }
-   return false;
 }
  
 void FreeItem(TCB_t* item){
