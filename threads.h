@@ -34,6 +34,7 @@ void yield(){
    RotateQ(&RunQ);
    next = RunQ;
    swapcontext(&(curr->context), &(next->context));
+
 }
 
 #endif /*THREADS_H*/
