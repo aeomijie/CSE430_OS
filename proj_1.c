@@ -7,19 +7,18 @@
                 Katie Gosse    | kgosse@asu.edu
 **************************************************************************/
 
-#include "q.h"
+#include "q_v3.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-void printQ(queue_t* q);
+void printQ(queue_t** q);
 
 int main(int argc, char** argv){
    //Add three elements to queue Q1, and then add 3 more to queue Q2.
    //Rotate each Q twice. Delete elements from each q, one by one and print values till the queues are empty.
    //Repeat the above test again.
 
-   queue_t q1, q2;
-   node_t* item;
+   queue_t *q1, *q2, *item;
    int i = 0;
 
    InitQueue(&q1);
@@ -71,13 +70,13 @@ int main(int argc, char** argv){
    return 0;
 }
 
-void printQ(queue_t* q){
-   if(q->head != NULL){
-      node_t* traverse = q->head;
-      printf("Payload: %d\n", traverse->payload);
+void printQ(queue_t **q){
+   if(*q != NULL){
+      queue_t *traverse = *q;
+      printf("Payload: %d\n", traverse->item->payload);
       traverse = traverse->next;
-      while(traverse != q->head){
-         printf("Payload: %d\n", traverse->payload);
+      while(traverse != *q){
+         printf("Payload: %d\n", traverse->item->payload);
          traverse = traverse->next;
       }
    }
