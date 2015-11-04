@@ -11,13 +11,36 @@
 #include "threads.h"
 
 //Semaphore data structure
-typedef struct Semaphore_t {
-    
+typedef struct Sem_t {
+   int count;
+   int lock;
+   //q->delQ;
 
-} Sempahore_t;
+} Sem_t;
 
 //Initializes the value field with the specified value
-void InitSem(sem, value);
+void InitSem(S, value){
+   //sem.count = value;
+}
 
+void P(S){
+   //sem.count--;
+   if(sem.count < 0){
+       //temp = delQ(RunQ);
+       //addQ(sem.Q, temp);
+       //swapcontext(RunQ->head, sem->Q->..)
+}
+
+void V(S){
+   //sem.count++;
+   if(S.count <= 0){
+      //temp = delQ(sem->Q);
+      //addQ(RunQ, delQ(S.Q));
+   }
+   yield();
+}
 
 #endif //SEM_H
+
+
+
