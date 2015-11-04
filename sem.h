@@ -12,15 +12,17 @@
 
 //Semaphore data structure
 typedef struct Sem_t {
-   int count;
-   int lock;
+   //Sem_t S;
+   //int count;
+   //int lock;
    //q->delQ;
 
 } Sem_t;
 
 //Initializes the value field with the specified value
-void InitSem(S, value){
-   //sem.count = value;
+void InitSem(sem S, int value){
+   //value = 1;
+   //S.count = value;
 }
 
 void P(S){
@@ -38,6 +40,16 @@ void V(S){
       //addQ(RunQ, delQ(S.Q));
    }
    yield();
+}
+
+void producer(){
+   //while(1){
+     
+}
+
+void consumer(){
+   //while(1){
+      
 }
 
 #endif //SEM_H
