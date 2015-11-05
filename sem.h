@@ -12,44 +12,36 @@
 
 //Semaphore data structure
 typedef struct Sem_t {
-   //Sem_t S;
-   //int count;
-   //int lock;
-   //q->delQ;
+   int count;
+   TCB_t *queue;
 
 } Sem_t;
 
 //Initializes the value field with the specified value
-void InitSem(sem S, int value){
-   //value = 1;
-   //S.count = value;
+void InitSem(Sem_t **S, int value){
+   *S = malloc(1, sizeof(Sem_t));
+   (*S)->count = value;
+   InitQueue(&((*S)->queue));
 }
 
-void P(S){
-   //sem.count--;
-   if(sem.count < 0){
-       //temp = delQ(RunQ);
-       //addQ(sem.Q, temp);
-       //swapcontext(RunQ->head, sem->Q->..)
+//Decrements a sempahores count and waits enter the RunQ
+void P(Sem_t **S){
+   *S->count--;
+   if((*S)->count < 0){
+       TCB_t *currProcess = DelQueue(&RunQ);
+       AddQueue(&((*S)->queue) , &currentProcess);
+       swapcontext(&(currProcess->context) , &(RunQ->context))
 }
 
-void V(S){
-   //sem.count++;
-   if(S.count <= 0){
-      //temp = delQ(sem->Q);
-      //addQ(RunQ, delQ(S.Q));
+//Increments a semaphores count, wakes up the next waiting semaphore,
+//and yields to the next process
+void V(Sem_t **S){
+   *S->count++;
+   if((*S)->count <= 0){
+      TCB_t *blockedProcess = DelQueue(&((*S)->queue));
+      AddQueue(&RunQ, &blockedProcess);
    }
    yield();
-}
-
-void producer(){
-   //while(1){
-     
-}
-
-void consumer(){
-   //while(1){
-      
 }
 
 #endif //SEM_H

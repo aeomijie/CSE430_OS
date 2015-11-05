@@ -8,3 +8,15 @@
 
 #include "threads.h"
 #include "sem.h"
+
+
+
+//producer
+void producer(){
+
+}
+
+//consumer
+void consumer(){
+
+}
