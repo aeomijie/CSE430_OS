@@ -18,7 +18,7 @@ typedef struct Sem{
 
 //Initializes the value field with the specified value
 void InitSem(Sem_t **S, int value){
-   *S = malloc(sizeof(Sem_t));
+   *S = (Sem_t*)malloc(sizeof(Sem_t));
    (*S)->count = value;
    InitQueue(&((*S)->queue));
 }
