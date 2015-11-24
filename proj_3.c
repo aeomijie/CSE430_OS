@@ -28,8 +28,8 @@ int main (int argc, char argv[]){
 
    // Start producer and consumer threads
    start_thread(&producer);
-   start_thread(&producer);
    start_thread(&consumer);
+   start_thread(&producer);
    start_thread(&consumer);
 
    // And run

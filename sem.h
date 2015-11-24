@@ -14,7 +14,6 @@
 typedef struct Sem{
    int count;
    TCB_t *queue;
-
 } Sem_t;
 
 //Initializes the value field with the specified value

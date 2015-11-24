@@ -13,6 +13,7 @@ static int global = 0;
 
 void func1();
 void func2();
+void func3();
 
 int main(int argc, char argv[]){
    //initialize RunQ
@@ -21,7 +22,7 @@ int main(int argc, char argv[]){
    //Start threads
    start_thread(&func1);
    start_thread(&func2);
-   
+   start_thread(&func3);
    //call run from threads
    run();
 
@@ -43,6 +44,17 @@ void func2(){
    int local = 0;
    while(1){
       printf("Function two\tlocal: %d, global: %d\n", local, global);
+      ++local;
+      ++global;
+      sleep(1);
+      yield();
+   }
+}
+
+void func3(){
+   int local = 0;
+   while(1){
+      printf("Function three\tlocal: %d, global: %d\n", local, global);
       ++local;
       ++global;
       sleep(1);
