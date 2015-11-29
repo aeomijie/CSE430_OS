@@ -10,8 +10,8 @@
 #include "sem.h"
 
 // Arbitrary numbers - change as needed or whatever
-#define R 5 // Max number of readers
-#define W 5 // Max number of writers
+#define R 4 // Max number of readers
+#define W 2 // Max number of writers
 
 int activeR = 0, activeW = 0; // To begin, no readers or writers are active
 int waitR = R, waitW = W; // Which means all readers and writers are waiting
@@ -25,6 +25,11 @@ int main (int argc, char argv[]){
    InitSem(&mutex, 1);
    InitSem(&Rsem, R);
    InitSem(&Wsem, W);
+
+   start_thread(&writer);
+   start_thread(&writer);
+
+   run();
 
    return 0;
 }
