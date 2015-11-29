@@ -34,9 +34,38 @@ void reader(){
 }
 
 void writer(){
+   int i = 1;
+   // Writer Entry
    P(&mutex); // Lock
    // Check if any readers or other writers are active
    if (activeR > 0 || activeW > 0) {
-       // wait
+      printf("Writing process is waiting...\n");
+      ++waitW; // Indicate another waiting writer
+      V(&mutex); // Unlock mutex
+      P(&Wsem); // Increment writing blocking Q
+      P(&mutex); // Relock mutex
+      --waitW; // Decrement active writer
+      printf("Writing process is done waiting...\n");
    }
+   ++activeW;
+   V(&mutex);
+
+   // Writer critical section
+   printf("Writing...\n");
+   // Writing..... Sleep for a few seconds
+   sleep(3);
+   printf("Done writing...\n");
+   
+   // Writer exit
+   P(&mutex);
+   --activeW; // Decrement an active writer
+   if(waitR > 0){
+      for(; i <= waitR; ++i){
+         V(&Rsem);
+      }
+   }
+   else if(waitW > 0){
+      V(&Wsem);
+   }
+   V(&mutex);
 }
