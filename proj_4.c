@@ -12,19 +12,19 @@
 // Arbitrary numbers - change as needed or whatever
 #define R 4 // Max number of readers
 #define W 2 // Max number of writers
+#define MOD 1000 // Modulus value for rand
 
-//char buff[200]; // Buffer for writing into and reading from
-
-int global; // Global for buffer writing
+char buff[200]; // Buffer for writing into and reading from
 int activeR, activeW; // To begin, no readers or writers are active
 int waitR, waitW; // Which means all readers and writers are waiting
-int MOD_VALUE = 1000;
 
 Sem_t *mutex, *Rsem, *Wsem;
 
-
-
+void readerEntry();
+void readerExit();
 void reader();
+void writerEntry();
+void writerExit();
 void writer();
 
 int main (int argc, char const *argv[]){
@@ -32,9 +32,7 @@ int main (int argc, char const *argv[]){
    activeR = 0;
    activeW = 0;
    waitR = 0;
-   waitW = 0; 
-   
-   global = 0;
+   waitW = 0;
 
    // Initialize semaphores
    InitSem(&mutex, 1);
@@ -47,11 +45,9 @@ int main (int argc, char const *argv[]){
    // Add the threads to the run queue
    start_thread(&writer);
    start_thread(&reader);
-  // start_thread(&reader);
    start_thread(&writer);
    start_thread(&reader);
    start_thread(&reader);
-//   start_thread(&reader);
 
    // And it begins
    run();
@@ -65,15 +61,15 @@ void readerEntry(){
    // Check if any writers are active or writing
    if(waitW > 0 || activeW > 0){
       printf("Reading process is waiting...\n");
-      ++waitR; // Indicate another waiting reader
+      sleep(1);
+      waitR++; // Indicate another waiting reader
       V(&mutex); // Unlock 
       P(&Rsem); // Increment reading blocking Q
-      //P(&mutex); // Lock
-      --waitR; // Decrement waiting reader
-      printf("Reading process is done waiting...\n");
+      waitR--; // Decrement waiting reader
+      printf("Reading process is done waiting.\n");
+      sleep(1);
    }
-   ++activeR; // Indicate another active reader
-   //V(&mutex); // Unlock  
+   activeR++; // Indicate another active reader
    
    if(waitR > 0){
       V(&Rsem);
@@ -86,24 +82,26 @@ void readerEntry(){
 void readerExit(){
    // Reader exit
    P(&mutex); // Lock
-   --activeR; // Decrement the number of active readers
-   if(activeR = 0 && waitW > 0){
-      printf("Reader remainder section...\n");
+   activeR--; // Decrement the number of active readers
+   if(activeR == 0 && waitW > 0){
+      printf("Entering reader remainder section...\n");
+      sleep(1);
       V(&Wsem);
-      printf("Exit reader remainder section...\n");
+      printf("Exiting reader remainder section.\n");
+      sleep(1);
    }
    else{
-     V(&mutex);
+      V(&mutex);
    }
 }
 
 void reader(){
    while(1){
       // Reader critical section
-      printf("Reading..\n");
       readerEntry();
+      printf("Reading from buffer...\n");
       sleep(1);
-      printf("global is %d\n", global);
+      printf("%s\n", buff);
       sleep(1);
       printf("Done reading.\n");
       sleep(1);
@@ -117,30 +115,39 @@ void writerEntry(){
    // Check if any readers or other writers are active
    if (activeR > 0 || activeW > 0) {
       printf("Writing process is waiting...\n");
-      ++waitW; // Indicate another waiting writer
+      sleep(1);
+      waitW++; // Indicate another waiting writer
       V(&mutex); // Unlock mutex
       P(&Wsem); // Increment writing blocking Q
-      //P(&mutex); // Relock mutex
-      --waitW; // Decrement waiting writer
+      P(&mutex); // Relock mutex ?????????????????
+      waitW--; // Decrement waiting writer
       printf("Writing process is done waiting.\n");
+      sleep(1);
    }
-   ++activeW;
+   activeW++;
    V(&mutex);
 }
 
 void writerExit(){
+   int i;
    // Writer exit
    P(&mutex);
-   --activeW; // Decrement an active writer
+   activeW--; // Decrement an active writer
    if(waitR > 0){
       printf("Writer remainder section for readers...\n");
-      V(&Rsem);
-      printf("Exiting writing remainder section...\n");
+      sleep(1);
+      for(i = 0; i < waitR; i++){
+         V(&Rsem);
+      }
+      printf("Exiting writing remainder section.\n");
+      sleep(1);
    }
    else if(waitW > 0){
       printf("Writer remainder section for writers...\n");
+      sleep(1);
       V(&Wsem);
-      printf("Exiting writer remainder section... \n");
+      printf("Exiting writer remainder section.\n");
+      sleep(1);
    }
    else{
       V(&mutex);
@@ -149,16 +156,17 @@ void writerExit(){
 
 void writer(){
    srand(time(NULL));
+   int num = 0;
 
    while(1){
-      // Writer critical section
-      printf("Writing...\n");
-      sleep(1);
       writerEntry();
-      global = (rand() % MOD_VALUE) + 1;
-      printf("global is now changed to %d\n", global);
+      printf("Writing to buffer...\n");
       sleep(1);
-      printf("Done writing...\n");
+      num = (rand() % MOD) + 1;
+      sprintf(buff, "Random number is now %d", num);
+      printf("Writer wrote random number %d to buffer.\n", num);
+      sleep(1);
+      printf("Done writing.\n");
       sleep(1);
       writerExit();
    }
